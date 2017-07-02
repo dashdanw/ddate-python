@@ -1,1 +1,6 @@
 Debug
+.cproject
+.gitignore
+.project
+.settings
+build
