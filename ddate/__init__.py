@@ -43,7 +43,6 @@ class ddate:
 
     def format(self, fmt):
         '''
-
         :param fmt: follows the string formatting rules detailed in the ddate manpage https://linux.die.net/man/1/ddate
         :type fmt: str
         :return: the string produced by the original fmt input

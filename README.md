@@ -23,6 +23,24 @@ Direct C bindings to format() can be found in the sub-package cddate.
     In [6]: dd.timetuple()
     Out[6]: (3183, 2, 37)
 
+### Format Strings
+This is based on the format rules in the ddate manpage (https://linux.die.net/man/1/ddate) similar to those found in time.strftime().
+    In [1]: import ddate
+
+    In [2]: dd = ddate.ddate.today()
+
+    In [3]: dd.format.__doc__
+
+    :param fmt: follows the string formatting rules detailed in the ddate manpage https://linux.die.net/man/1/ddate
+    :type fmt: str
+    :return: the string produced by the original fmt input
+    :rtype: str
+
+    In [4]: fmt_str = dd.format('Today is %{%A, the %e of %B%}, %Y. %N%nCelebrate %H')
+
+    In [5]: print(fmt_str)
+    Today is Prickle-Prickle, the 38th of Confusion, 3183.
+
 ### Comparison and Arithmetic Operators
     In [1]: import ddate
 
