@@ -2,7 +2,6 @@
 
 from distutils.core import setup, Extension
 import ddate
-import pypandoc
 
 setup(
     name="ddate",
@@ -11,7 +10,6 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'Django>=1.8'
     ],
     version=ddate.__version__,
     description='ddate C bindings',
@@ -26,6 +24,6 @@ setup(
         'linux-util'
     ],
     classifiers=[],
-    long_description=pypandoc.convert('README.md', 'rst'),
+    long_description="C binding for oldschool util-linux ddate.",
     ext_modules=[Extension("cddate", ["bind.c", "libddate.c"])]
 )
