@@ -23,7 +23,7 @@ Direct C bindings to format() can be found in the sub-package cddate.
     In [6]: dd.timetuple()
     Out[6]: (3183, 2, 37)
 
-### Comparison Operators
+### Comparison and Arithmetic Operators
     In [1]: import ddate
 
     In [2]: dd = ddate.ddate.today()
