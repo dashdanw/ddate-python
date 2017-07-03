@@ -41,6 +41,16 @@ class ddate:
 
         self.__str = self._format()
 
+    def format(self, fmt):
+        '''
+
+        :param fmt: follows the string formatting rules detailed in the ddate manpage https://linux.die.net/man/1/ddate
+        :type fmt: str
+        :return: the string produced by the original fmt input
+        :rtype: str
+        '''
+        return self._format(fmt)
+
     def _format(self, fmt=''):
         import cddate
         return cddate.format(fmt, self.__season, self.__day, self.__yday, self.__year)
