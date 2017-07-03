@@ -3,7 +3,7 @@
 
 #include <Python.h>
 
-PyObject * ddate_now(PyObject *);
-PyObject * ddate_ddate(PyObject *, PyObject *);
+PyObject * cddate_makeday(PyObject *, PyObject *);
+PyObject * cddate_format(PyObject *, PyObject *);
 
 #endif

@@ -1,51 +1,51 @@
 #include "libddate.h"
 
-char ddate_now_docs[] = "Get current time in discordian form.";
-char ddate_ddate_docs[] = "Get time in discordian form.";
+char cddate_makeday_docs[] = "Convert gregorian day, month year to discordian date";
+char cddate_format_docs[] = "Get convert month, day, year ints to formatted discordian date string.";
 
-PyMethodDef ddate_funcs[] = {
+PyMethodDef cddate_funcs[] = {
 	{
-		"now",
-		(PyCFunction)ddate_now,
-		METH_NOARGS,
-		ddate_now_docs
-	},
-	{
-		"ddate",
-		(PyCFunction)ddate_ddate,
-		METH_VARARGS,
-		ddate_now_docs
-	},
+        "makeday",
+        (PyCFunction)cddate_makeday,
+        METH_VARARGS,
+        cddate_makeday_docs
+    },
+    {
+        "format",
+        (PyCFunction)cddate_format,
+        METH_VARARGS,
+        cddate_format_docs
+    },
 	{
 		NULL
 	}
 };
 
-char ddate_mod_docs[] = "Convert standard dates to discordian dates.";
-char ddate_mod_name[] = "ddate";
+char cddate_mod_docs[] = "Convert standard dates to discordian dates.";
+char cddate_mod_name[] = "cddate";
 
 #if PY_MAJOR_VERSION >= 3
 
-PyModuleDef ddate_mod = {
+PyModuleDef cddate_mod = {
 	PyModuleDef_HEAD_INIT,
-	ddate_mod_name,
-	ddate_mod_docs,
+	cddate_mod_name,
+	cddate_mod_docs,
 	-1,
-	ddate_funcs,
+	cddate_funcs,
 	NULL,
 	NULL,
 	NULL,
 	NULL
 };
 
-PyMODINIT_FUNC PyInit_ddate(void) {
-	return PyModule_Create(&ddate_mod);
+PyMODINIT_FUNC PyInit_cddate(void) {
+	return PyModule_Create(&cddate_mod);
 }
 
 #else
 
-void inithelloworld(void) {
-	Py_InitModule3(ddate_mod_name, ddate_funcs, ddate_mod_docs);
+void initcddate(void) {
+	Py_InitModule3(cddate_mod_name, cddate_funcs, cddate_mod_docs);
 }
 
 #endif
