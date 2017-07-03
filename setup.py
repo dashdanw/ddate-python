@@ -25,5 +25,5 @@ setup(
     ],
     classifiers=[],
     long_description="C binding for oldschool util-linux ddate.",
-    ext_modules=[Extension("cddate", ["bind.c", "libddate.c"])]
+    ext_modules=[Extension("cddate", ["cddate/bind.c", "cddate/libddate.c"])]
 )
