@@ -1,4 +1,7 @@
+test.py
 .pyc
+ddate/__pycache__
+.idea
 Debug
 .cproject
 .gitignore
