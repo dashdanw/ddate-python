@@ -2,44 +2,61 @@ from datetime import date as _date
 import time as _time
 from datetime import timedelta
 
+from .util import _cmperror
+from .util import _ord2ymd
+from .util import _ydy2ord
+from .util import _get_yday
+from .util import _is_leapyear
+
+from .constants import DAYS
+from .constants import SEASONS
+from .constants import HOLYDAYS
+from .constants import EXCLAMATION
+
 __version__ = '1.0'
-
-
-def _cmperror(x, y):
-    raise TypeError("can't compare '%s' to '%s'" % (
-        type(x).__name__, type(y).__name__))
 
 class ddate:
     MIN_DAY = 1
     MAX_DAY = 73
     MIN_SEASON = 1
     MAX_SEASON = 5
-    MIN_YEAR = -32768
-    MAX_YEAR = 32768
+    MIN_YEAR = 1167
+    MAX_YEAR = 11166
 
     ORDINAL_PRE_AD_ONE = 425882
 
-    def __init__(self, year, month, day):
+    def __init__(self, year, season, day):
+        self.__year = year
+        self.__season = season
+        self.__day = day
+        self.__yday = _get_yday(year, season, day)
 
-        dd_data = self._makeday(month, day, year)
+        if day == 5 or day == 50:
+            self.__holyday = HOLYDAYS[season][day==50]
+        else:
+            self.__holyday = None
 
-        self.__season = dd_data['season']
-        self.__season_long = dd_data['season_long']
-        self.__season_short = dd_data['season_short']
+        self.__exclamation = EXCLAMATION.random()
 
-        self.__day = dd_data['day']
-        self.__day_long = dd_data['day_long']
-        self.__day_short = dd_data['day_short']
-
-        self.__yday = dd_data['yday']
-        self.__year = dd_data['year']
-
-        self.__holyday = dd_data['holyday']
-        self.__exclamation = dd_data['exclamation']
-
-        self.__xday = dd_data['xday']
+        #TODO: xday
 
         self.__str = self._format()
+
+    @classmethod
+    def makeday(cls, year, month, day):
+        dd_data = cls._makeday(year, month, day)
+
+        cls.__season = dd_data['season']
+        cls.__day = dd_data['day']
+        cls.__yday = dd_data['yday']
+        cls.__year = dd_data['year']
+
+        cls.__holyday = dd_data['holyday']
+        cls.__exclamation = dd_data['exclamation']
+
+        cls.__xday = dd_data['xday']
+
+        cls.__str = cls._format()
 
     def format(self, fmt):
         '''
@@ -57,7 +74,7 @@ class ddate:
     @staticmethod
     def _makeday(month, day, year):
         import cddate
-        return cddate.makeday(month, day, year)
+        return cddate.makeday(year, month, day)
 
     @classmethod
     def fromtimestamp(cls, t):
@@ -71,16 +88,16 @@ class ddate:
 
     @classmethod
     def fromdatetime(cls, datetime):
-        return cls(datetime.year, datetime.month, datetime.day)
+        return cls.makeday(datetime.year, datetime.month, datetime.day)
 
-    #TODO: fromordinal, toordinal
-    # def fromordinal(cls, n):
-    #     y, m, d = _ord2ymd(n)
-    #     return cls(y, m, d)
+    @classmethod
+    def fromordinal(cls, n):
+        y, m, d = _ord2ymd(n)
+        return cls(y, m, d)
 
     def toordinal(self):
-        leap_days = int((self.__year + 2) / 4)
-        return leap_days + (self.__year * 365) + self.__yday
+        n = _ydy2ord(self.__yday, self.__year)
+        return n
 
     def ctime(self):
         "Return ctime() style string."
@@ -98,6 +115,9 @@ class ddate:
 
     def weekday(self):
         return self.__day % 5
+
+    def leapyear(self):
+        return _is_leapyear(self.__year)
 
     def isoweekday(self):
         return (self.__day % 5) + 1
@@ -122,7 +142,8 @@ class ddate:
         if day is None:
             day = self.__day
         self._check_date_fields(year, season, day)
-        return ddate(year, season, day)
+        self = ddate(year, season, day)
+        return self
 
     # type conversions
 
@@ -258,3 +279,23 @@ class ddate:
 
     def __reduce__(self):
         return (self.__class__, self.__getstate())
+
+    # masked properties
+    @property
+    def year(self):
+        return self.__year
+    @property
+    def season(self):
+        return self.__season
+    @property
+    def yday(self):
+        return self.__yday
+    @property
+    def year(self):
+        return self.__day
+    @property
+    def holyday(self):
+        return self.__holyday
+    @property
+    def xday(self):
+        return self.__xday

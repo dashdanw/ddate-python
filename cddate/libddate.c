@@ -20,7 +20,7 @@ PyObject * cddate_makeday(PyObject *self, PyObject *args)
 
     int xd;
 
-    if (!PyArg_ParseTuple(args, "iii", &month, &day, &year))
+    if (!PyArg_ParseTuple(args, "iii", &year, &month, &day))
         return NULL;
 
     dd = makeday(month, day, year);
@@ -78,4 +78,57 @@ PyObject * cddate_format(PyObject *self, PyObject *args)
 	format(out, fmt, dt);
 
     return Py_BuildValue("s", out);
+}
+
+PyObject * cddate_getday(PyObject *self, PyObject *args)
+{
+    struct disc_time dd;
+
+    int season, day, year;
+
+    const char * dl;
+    const char * ds;
+
+    const char * sl;
+    const char * ss;
+
+    const char * hd;
+    const char * ex;
+
+    int xd;
+
+    if (!PyArg_ParseTuple(args, "iii", &year, &season, &day))
+        return NULL;
+
+    dl = day_long[day % 5];
+    ds = day_short[day % 5];
+
+    sl = season_long[season];
+    ss = season_short[season];
+
+
+
+    xd = xday_countdown(yday, year);
+
+    srandom(time(NULL));
+
+    if (dd.day == 4 || dd.day == 49)
+        hd = holyday[dd.season][dd.day == 49];
+    else
+        hd = "";
+
+    return Py_BuildValue(
+        "{s:i, s:i, s:i, s:i, s:s, s:s, s:s, s:s, s:s, s:s, s:i}",
+        "season", dd.season,
+        "day", dd.day,
+        "yday", dd.yday,
+        "year", dd.year,
+        "day_long", dl,
+        "day_short", ds,
+        "season_long", sl,
+        "season_short", ss,
+        "holyday", hd,
+        "exclamation", ex,
+        "xday", xd
+    );
 }
