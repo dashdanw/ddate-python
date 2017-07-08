@@ -36,10 +36,10 @@ def _ord2ymd(n):
     is_leap = _is_leapyear(year)
 
     if is_leap:
-        leaped = n-74
+        leaped = n - 74
 
         if leaped < 1:
-            return year, 1, n+1
+            return year, 1, n + 1
 
         month, day = divmod(leaped, 73)
         month += 2

@@ -46,30 +46,25 @@ class ddate:
     def makeday(cls, year, month, day):
         dd_data = cls._makeday(year, month, day)
 
-        cls.__season = dd_data['season']
-        cls.__day = dd_data['day']
-        cls.__yday = dd_data['yday']
-        cls.__year = dd_data['year']
+        season = dd_data['season']
+        day = dd_data['day']
+        year = dd_data['year']
 
-        cls.__holyday = dd_data['holyday']
-        cls.__exclamation = dd_data['exclamation']
+        return cls(year,season,day)
 
-        cls.__xday = dd_data['xday']
-
-        cls.__str = cls._format()
-
-    def format(self, fmt):
+    def format(self, fmt=None):
         '''
         :param fmt: follows the string formatting rules detailed in the ddate manpage https://linux.die.net/man/1/ddate
         :type fmt: str
         :return: the string produced by the original fmt input
         :rtype: str
         '''
+        fmt = fmt if fmt else constants.DEFAULT_FMT
         return self._format(fmt)
 
     def _format(self, fmt=''):
         import cddate
-        return cddate.format(fmt, self.__season, self.__day, self.__yday, self.__year)
+        return cddate.format(fmt, self.__season, self.__day-1, self.__yday, self.__year)
 
     @staticmethod
     def _makeday(month, day, year):
@@ -232,6 +227,7 @@ class ddate:
             raise NotImplementedError
             year = self.__year
             season = self.__season
+            #right here
             day = self.__day + other.days
             self._check_date_fields(year, season, day)
             result = self.__class__(year, self.__season, self.__day)
@@ -291,7 +287,7 @@ class ddate:
     def yday(self):
         return self.__yday
     @property
-    def year(self):
+    def day(self):
         return self.__day
     @property
     def holyday(self):
