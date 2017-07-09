@@ -1,4 +1,5 @@
 from datetime import date as _date
+import datetime as _datetime
 import time as _time
 from datetime import timedelta
 
@@ -20,10 +21,12 @@ class ddate:
     MAX_DAY = 73
     MIN_SEASON = 1
     MAX_SEASON = 5
-    MIN_YEAR = 1167
-    MAX_YEAR = 11166
+    MIN_YEAR = 1
+    MAX_YEAR = _datetime.MAXYEAR + 1166
 
     ORDINAL_PRE_AD_ONE = 425882
+
+    DEFAULT_FMT = 'Today is %{%A, the %e day of %B%} in the YOLD %Y%N%nCelebrate %H'
 
     def __init__(self, year, season, day):
         self.__year = year
@@ -32,7 +35,7 @@ class ddate:
         self.__yday = _get_yday(year, season, day)
 
         if day == 5 or day == 50:
-            self.__holyday = HOLYDAYS[season][day==50]
+            self.__holyday = None #HOLYDAYS._CONSTANTS[self.__season-1][day==50]
         else:
             self.__holyday = None
 
@@ -50,7 +53,12 @@ class ddate:
         day = dd_data['day']
         year = dd_data['year']
 
-        return cls(year,season,day)
+        return cls(year, season, day)
+
+    @staticmethod
+    def _makeday(year, month, day):
+        import cddate
+        return cddate.makeday(year, month, day)
 
     def format(self, fmt=None):
         '''
@@ -59,22 +67,17 @@ class ddate:
         :return: the string produced by the original fmt input
         :rtype: str
         '''
-        fmt = fmt if fmt else constants.DEFAULT_FMT
+        fmt = fmt if fmt else self.DEFAULT_FMT
         return self._format(fmt)
 
     def _format(self, fmt=''):
         import cddate
         return cddate.format(fmt, self.__season, self.__day-1, self.__yday, self.__year)
 
-    @staticmethod
-    def _makeday(month, day, year):
-        import cddate
-        return cddate.makeday(year, month, day)
-
     @classmethod
     def fromtimestamp(cls, t):
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
-        return cls(y, m, d)
+        return cls.makeday(y, m, d)
 
     @classmethod
     def today(cls):
@@ -280,15 +283,36 @@ class ddate:
     @property
     def year(self):
         return self.__year
+    @year.setter
+    def year(self, val):
+        year = int(val)
+        if self.MIN_YEAR <= year <= self.MAX_YEAR:
+            self.__year = year
+        else:
+            raise ValueError("Year must be set between {} and {}, was {}".format(self.MIN_YEAR, self.MAX_YEAR, year))
     @property
     def season(self):
         return self.__season
-    @property
-    def yday(self):
-        return self.__yday
+    @year.setter
+    def season(self, val):
+        season = int(val)
+        if self.MIN_SEASON <= season <= self.MAX_SEASON:
+            self.__season = season
+        else:
+            raise ValueError("Season must be set between {} and {}, was {}".format(self.MIN_SEASON, self.MAX_SEASON, season))
     @property
     def day(self):
         return self.__day
+    @year.setter
+    def day(self, val):
+        day = int(val)
+        if self.MIN_DAY <= day <= (self.MAX_DAY+(self.leapyear() and self.__season == 1)):
+            self.__day = day
+        else:
+            raise ValueError("Year must be set between {} and {}, was {}".format(self.MIN_YEAR, self.MAX_YEAR, val))
+    @property
+    def yday(self):
+        return self.__yday
     @property
     def holyday(self):
         return self.__holyday

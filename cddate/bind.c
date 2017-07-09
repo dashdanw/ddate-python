@@ -2,7 +2,7 @@
 
 char cddate_makeday_docs[] = "Convert gregorian day, month year to discordian date";
 char cddate_format_docs[] = "Get convert month, day, year ints to formatted discordian date string.";
-char cddate_getday_docs[] = "Get date data from numerical representation of the discordian date.";
+//char cddate_getday_docs[] = "Get date data from numerical representation of the discordian date.";
 
 PyMethodDef cddate_funcs[] = {
 	{
@@ -16,12 +16,6 @@ PyMethodDef cddate_funcs[] = {
         (PyCFunction)cddate_format,
         METH_VARARGS,
         cddate_format_docs
-    },
-    {
-        "format",
-        (PyCFunction)cddate_getday,
-        METH_VARARGS,
-        cddate_getday_docs
     },
 	{
 		NULL

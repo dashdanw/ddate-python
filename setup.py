@@ -8,9 +8,6 @@ setup(
     packages=[
         'ddate'
     ],
-    install_requires=[
-        'setuptools',
-    ],
     version=ddate.__version__,
     description='ddate C bindings',
     author='Dash Winterson',

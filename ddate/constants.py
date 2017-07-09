@@ -17,7 +17,6 @@ class CONSTANTS_META(type):
         raise KeyError("Cannot edit day constants!")
 
 
-
 class DAYS(object):
     _CONSTANTS = (
         ("SM", "Sweetmorn"),
@@ -65,5 +64,3 @@ class EXCLAMATION(object):
     @staticmethod
     def random():
         random.choice(EXCLAMATION._CONSTANTS)
-
-DEFAULT_FMT = 'Today is %{%A, the %e day of %B%} in the YOLD %Y%N%nCelebrate %H'

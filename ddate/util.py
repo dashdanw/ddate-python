@@ -1,6 +1,6 @@
-_DY400 = 146097
-_DY100 = 36524
-_DYY4 = 1461
+_DY400 = 146100
+_DY100 = 36525
+_DY4 = 1461
 
 
 def _cmperror(x, y):
@@ -10,8 +10,10 @@ def _cmperror(x, y):
 
 def _ydy2ord(yday, year):
     y = year - 1
-    offset_y = y + 2
-    days_before_year = y * 365 + offset_y // 4 - offset_y // 100 + offset_y // 400
+    Y400, y = divmod(y, 400)
+    Y100, y = divmod(y, 100)
+    Y4, Y1 = divmod(y, 4)
+    days_before_year = Y400*_DY400 + Y100 * _DY100 + Y4 * _DY4 + Y1 * 365
     return days_before_year + yday
 
 
@@ -19,36 +21,34 @@ def _ord2ymd(n):
     n -= 1
 
     n400, n = divmod(n, _DY400)
-
-    year = n400 * 400 + 1
-
     n100, n = divmod(n, _DY100)
-    n4, n = divmod(n, _DYY4)
-
+    n4, n = divmod(n, _DY4)
     n1, n = divmod(n, 365)
 
-    year += n100 * 100 + n4 * 4 + n1
+    year = n400 * 400 + n100 * 100 + n4 * 4 + n1
 
-    if n1 == 4 or n100 == 4:
-        assert n == 0
-        return year - 1, 5, 73
+    is_leap = n1 == 1
+    past_leap = n1 > 1
 
-    is_leap = _is_leapyear(year)
-
-    if is_leap:
-        leaped = n - 74
-
-        if leaped < 1:
-            return year, 1, n + 1
-
-        month, day = divmod(leaped, 73)
-        month += 2
-
+    # case for leap day
+    if is_leap and n == 73:
+        month = 0
+        day = 73
+    # last day of every year post-leap-year
+    elif past_leap and n == 0:
+        year -= 1
+        month = 4
+        day = 72
+    # every day after leap day
+    elif (is_leap and n > 73) or past_leap:
+        month, day = divmod(n-1, 73)
+    #else compute normally
     else:
         month, day = divmod(n, 73)
-        month += 1
 
     day += 1
+    month += 1
+    year += 1
 
     return year, month, day
 
